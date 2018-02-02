@@ -84,7 +84,7 @@ def match_docs_with_words(key_words, d_docs):
 
 
 ### 1. carrego todos os documentos em um dicionário com key nome e value conteúdo
-my_d_docs = load_text_from_docx('training-dataset')
+my_d_docs = load_text_from_docx('data_original')
 # for key in sorted(my_d_docs):
 #   print("%s: \n %s" % (key, my_d_docs[key]))
 
@@ -93,7 +93,11 @@ my_d_docs = load_text_from_docx('training-dataset')
 key_words = (
     'sugerimos', 
     'sugere-se', 
+    'sugerindo-se',
+    'sugiro',
     'conveniente', 
+    'convém',
+    'necessária',
     'correlação', 
     'correlacionar', 
     'recomenda', 
@@ -101,6 +105,19 @@ key_words = (
     'recomenda-se', 
     'recomendando-se',
     'recomendação',
+    'considerar',
+    'merece',
+    'merecendo',
+    'devendo-se',
+    'estudo',
+    'poderá',
+    'poderão',
+    'pode',
+    'podem',
+    'poderia',
+    'repetir',
+    'complementar',
+    'manter',
     'controle')
 
 d_possible_docs = match_docs_with_words(key_words, my_d_docs)
