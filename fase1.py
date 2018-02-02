@@ -63,7 +63,7 @@ def match_docs_with_words(key_words, d_docs):
                 # print(k_w)
 
                 # abro o documento original e pego o parágrafo inteiro que possui esta palavra
-                orig_docx = textract.process('training-dataset/' + doc_name)
+                orig_docx = textract.process('data_original/' + doc_name)
                 orig_docx_text = clean_text(orig_docx.decode('utf8'))
 
                 lines = orig_docx_text.lower().split('\n\n')
@@ -122,19 +122,22 @@ key_words = (
 
 d_possible_docs = match_docs_with_words(key_words, my_d_docs)
 training_set = []
+possible_docs_list = []
 for key in sorted(d_possible_docs):
     # print("%s: \n %s" % (key, d_possible_docs[key]))
     if len(d_possible_docs[key]) is not 0:
         # print(d_possible_docs[key])
+        possible_docs_list.append(key)
         for sentence in d_possible_docs[key]:
             training_set.append(sentence)
 
 print(len(training_set))
-f = open("sentence_extracted.txt","w")
+f = open("data/sentences.txt","w")
 for s in training_set:
-    f.write(s + " . \n\n")
+    f.write(s + "\n\n")
 f.close()
 
+# print(possible_docs_list)
 
 
 
