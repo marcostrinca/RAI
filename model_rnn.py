@@ -11,19 +11,16 @@ import sys
 print('Loading data')
 x, y, vocabulary, vocabulary_inv = load_data("rnn")
 X_train, X_test, y_train, y_test = train_test_split( x, y, test_size=0.2, random_state=42)
+sequence_length = x.shape[1]
+vocabulary_size = len(vocabulary_inv)
+embedding_dim = 80
 
 print("sequence length: ", sequence_length)
 print("vocabulary size: ", vocabulary_size)
 print("X_train shape: ", X_train.shape)
 print("y_train shape: ", y_train.shape)
-print(X_test)
-print(y_test)
-
-sequence_length = x.shape[1]
-vocabulary_size = len(vocabulary_inv)
-embedding_dim = 80
-
-
+print(X_test[:10])
+print(y_test[:10])
 
 def create_model(input_length):
     print ('Creating model...')

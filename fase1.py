@@ -23,17 +23,19 @@ def load_text_from_docx(folder):
     dict_docs = {}
     for filename in os.listdir(folder):
 
-        # path
-        path = folder+"/"+filename
+        if filename != ".DS_Store":
+            # path
+            path = folder+"/"+filename
+            print(filename)
 
-        # extraio o texto e converto para string utf8
-        content = textract.process(path)
-        text = content.decode('utf8')
+            # extraio o texto e converto para string utf8
+            content = textract.process(path)
+            text = content.decode('utf8')
 
-        # limpo o texto
-        text = clean_text(text)
+            # limpo o texto
+            text = clean_text(text)
 
-        dict_docs[filename] = text
+            dict_docs[filename] = text
 
     return dict_docs
 
@@ -121,23 +123,17 @@ key_words = (
     'controle')
 
 d_possible_docs = match_docs_with_words(key_words, my_d_docs)
-training_set = []
-possible_docs_list = []
-for key in sorted(d_possible_docs):
-    # print("%s: \n %s" % (key, d_possible_docs[key]))
-    if len(d_possible_docs[key]) is not 0:
-        # print(d_possible_docs[key])
-        possible_docs_list.append(key)
-        for sentence in d_possible_docs[key]:
-            training_set.append(sentence)
 
-print(len(training_set))
+# open file
 f = open("data/sentences.txt","w")
-for s in training_set:
-    f.write(s + "\n\n")
-f.close()
 
-# print(possible_docs_list)
+for key in sorted(d_possible_docs):
+    if len(d_possible_docs[key]) is not 0:
+        for sentence in d_possible_docs[key]:
+            f.write(key + " | "+ sentence + "\n\n")
+
+    
+f.close()
 
 
 
