@@ -28,11 +28,13 @@ sequence_length = x.shape[1] # 56
 vocabulary_size = len(vocabulary_inv) # 18765
 embedding_dim = 256
 filter_sizes = [3,4,5]
-num_filters = 512
+num_filters_1 = 300
+num_filters_2 = 300
+num_filters_3 = 300
 drop = 0.5
 
 epochs = 100
-batch_size = 33
+batch_size = 60
 
 # this returns a tensor
 print("Creating Model...")
@@ -40,9 +42,9 @@ inputs = Input(shape=(sequence_length,), dtype='int32')
 embedding = Embedding(input_dim=vocabulary_size, output_dim=embedding_dim, input_length=sequence_length)(inputs)
 reshape = Reshape((sequence_length,embedding_dim,1))(embedding)
 
-conv_0 = Conv2D(num_filters, kernel_size=(filter_sizes[0], embedding_dim), padding='valid', kernel_initializer='normal', activation='relu')(reshape)
-conv_1 = Conv2D(num_filters, kernel_size=(filter_sizes[1], embedding_dim), padding='valid', kernel_initializer='normal', activation='relu')(reshape)
-conv_2 = Conv2D(num_filters, kernel_size=(filter_sizes[2], embedding_dim), padding='valid', kernel_initializer='normal', activation='relu')(reshape)
+conv_0 = Conv2D(num_filters_1, kernel_size=(filter_sizes[0], embedding_dim), padding='valid', kernel_initializer='normal', activation='relu')(reshape)
+conv_1 = Conv2D(num_filters_2, kernel_size=(filter_sizes[1], embedding_dim), padding='valid', kernel_initializer='normal', activation='relu')(reshape)
+conv_2 = Conv2D(num_filters_3, kernel_size=(filter_sizes[2], embedding_dim), padding='valid', kernel_initializer='normal', activation='relu')(reshape)
 
 maxpool_0 = MaxPool2D(pool_size=(sequence_length - filter_sizes[0] + 1, 1), strides=(1,1), padding='valid')(conv_0)
 maxpool_1 = MaxPool2D(pool_size=(sequence_length - filter_sizes[1] + 1, 1), strides=(1,1), padding='valid')(conv_1)
