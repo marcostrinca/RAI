@@ -1,3 +1,5 @@
+# This Python file uses the following encoding: utf-8
+
 import numpy as np
 import re
 import itertools
@@ -39,9 +41,9 @@ def load_data_and_labels_1d():
     Returns split sentences and labels.
     """
     # Load data from files
-    positive_examples = list(open("./data/sentences_P.txt", "r", encoding='utf-8').readlines())
+    positive_examples = list(open("./data/sentences_P.txt", "r").readlines())
     positive_examples = [s.strip() for s in positive_examples]
-    negative_examples = list(open("./data/sentences_N.txt", "r", encoding='utf-8').readlines())
+    negative_examples = list(open("./data/sentences_N.txt", "r").readlines())
     negative_examples = [s.strip() for s in negative_examples]
     # Split by words
     x_text = positive_examples + negative_examples
@@ -64,10 +66,12 @@ def load_data_and_labels():
     positive_examples = [s.strip() for s in positive_examples]
     negative_examples = list(open("./data/sentences_N.txt", "r", encoding='utf-8').readlines())
     negative_examples = [s.strip() for s in negative_examples]
+
     # Split by words
     x_text = positive_examples + negative_examples
     x_text = [clean_str(sent) for sent in x_text]
     x_text = [s.split(" ") for s in x_text]
+    
     # Generate labels
     positive_labels = [[0, 1] for _ in positive_examples]
     negative_labels = [[1, 0] for _ in negative_examples]
@@ -130,7 +134,7 @@ def load_data(load_type):
     # print(sentences)
     # print(labels)
     sentences_padded = pad_sentences(sentences)
-    # print(sentences_padded)
+    print(sentences_padded)
     vocabulary, vocabulary_inv = build_vocab(sentences_padded)
     x, y = build_input_data(sentences_padded, labels, vocabulary)
     return [x, y, vocabulary, vocabulary_inv]

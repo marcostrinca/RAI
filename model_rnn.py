@@ -1,16 +1,26 @@
 from keras.layers import Dense, Dropout, LSTM, Embedding, Bidirectional, GRU
-# from keras.preprocessing.sequence import pad_sequences
 from keras.models import Sequential
 from keras.callbacks import ModelCheckpoint
+from keras import optimizers
 
 from sklearn.model_selection import train_test_split
 from data_helpers import load_data
 
-import sys
+import sys, json
 
 print('Loading data')
 x, y, vocabulary, vocabulary_inv = load_data("rnn")
-X_train, X_test, y_train, y_test = train_test_split( x, y, test_size=0.3, random_state=42)
+
+# save dictionarys for predictions later
+with open('vocabulary.json', 'w') as fp:
+    json.dump(vocabulary, fp)
+
+with open('vocabulary_inv.json', 'w') as fp2:
+    json.dump(vocabulary_inv, fp2)
+
+
+# split train and test data
+X_train, X_test, y_train, y_test = train_test_split( x, y, test_size=0.2, random_state=42)
 sequence_length = x.shape[1]
 vocabulary_size = len(vocabulary_inv)
 embedding_dim = 128
@@ -43,18 +53,28 @@ def create_model(input_length):
     # model.add(Dropout(0.5))
     # model.add(Dense(1, activation='sigmoid'))
 
+    optimizer = optimizers.Adam(lr=0.0004)
     model.compile(loss='binary_crossentropy',
-                  optimizer='adam',
+                  optimizer=optimizer,
                   metrics=['accuracy'])
     return model
 
 
-checkpoint = ModelCheckpoint('weights_lstm.{epoch:03d}-{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
 model = create_model(sequence_length)
 
 # sys.exit(0)
-model.fit(X_train, y_train, batch_size=80, epochs=35, callbacks=[checkpoint], validation_data=(X_test, y_test))
+checkpoint = ModelCheckpoint('./weights/weights_lstm.{epoch:03d}-{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
+model.fit(X_train, y_train, batch_size=80, epochs=40, callbacks=[checkpoint], validation_data=(X_test, y_test))
 
 score, acc = model.evaluate(X_test, y_test)
 print('Test score:', score)
 print('Test accuracy:', acc)
+
+# serialize model to JSON
+model_json = model.to_json()
+with open("model.json", "w") as json_file:
+    json_file.write(model_json)
+
+# serialize weights to HDF5
+model.save_weights("weights_final.h5")
+print("Saved model to disk")
