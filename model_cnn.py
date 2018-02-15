@@ -22,19 +22,19 @@ print(x[0])
 print(y[0])
 # sys.exit(0)
 
-X_train, X_test, y_train, y_test = train_test_split( x, y, test_size=0.3, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split( x, y, test_size=0.2, random_state=42)
 
-sequence_length = x.shape[1] # 56
-vocabulary_size = len(vocabulary_inv) # 18765
-embedding_dim = 256
-filter_sizes = [3,4,5]
+sequence_length = x.shape[1]
+vocabulary_size = len(vocabulary_inv)
+embedding_dim = 128
+filter_sizes = [3,3,4]
 num_filters_1 = 300
 num_filters_2 = 300
 num_filters_3 = 300
-drop = 0.5
+drop = 0.6
 
 epochs = 100
-batch_size = 60
+batch_size = 32
 
 # this returns a tensor
 print("Creating Model...")
@@ -65,5 +65,11 @@ model.compile(optimizer=adam, loss='binary_crossentropy', metrics=['accuracy'])
 print("Traning Model...")
 model.fit(X_train, y_train, batch_size=batch_size, epochs=epochs, verbose=1, callbacks=[checkpoint], validation_data=(X_test, y_test))  # starts training
 
+# serialize model to JSON
+model_json = model.to_json()
+with open("model_cnn_128_d06.json", "w") as json_file:
+    json_file.write(model_json)
 
-
+# serialize weights to HDF5
+model.save_weights("w_cnn_128_d06.h5")
+print("Saved model to disk")
