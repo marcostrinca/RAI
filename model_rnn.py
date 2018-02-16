@@ -23,7 +23,7 @@ with open('vocabulary_inv.json', 'w') as fp2:
 X_train, X_test, y_train, y_test = train_test_split( x, y, test_size=0.2, random_state=42)
 sequence_length = x.shape[1]
 vocabulary_size = len(vocabulary_inv)
-embedding_dim = 128
+embedding_dim = 138
 
 print("sequence length: ", sequence_length)
 print("vocabulary size: ", vocabulary_size)
@@ -37,9 +37,8 @@ def create_model(input_length):
     model = Sequential()
     model.add(Embedding(input_dim = vocabulary_size, output_dim = embedding_dim, input_length = input_length))
 
-    # GRU(128) gives 80% at epoch 80 with embedding_dim = 64
     model.add(Bidirectional(LSTM(128)))
-    model.add(Dropout(0.5))
+    model.add(Dropout(0.6))
     model.add(Dense(1, activation='sigmoid'))
 
     # model.add(Bidirectional(LSTM(128, return_sequences=True)))
@@ -53,7 +52,7 @@ def create_model(input_length):
     # model.add(Dropout(0.5))
     # model.add(Dense(1, activation='sigmoid'))
 
-    optimizer = optimizers.Adam(lr=0.0004)
+    optimizer = optimizers.Adam(lr=0.00035)
     model.compile(loss='binary_crossentropy',
                   optimizer=optimizer,
                   metrics=['accuracy'])
@@ -64,7 +63,7 @@ model = create_model(sequence_length)
 
 # sys.exit(0)
 checkpoint = ModelCheckpoint('./weights/w_rnn_128.{epoch:03d}-{val_acc:.4f}.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
-model.fit(X_train, y_train, batch_size=64, epochs=60, callbacks=[checkpoint], validation_data=(X_test, y_test))
+model.fit(X_train, y_train, batch_size=80, epochs=60, callbacks=[checkpoint], validation_data=(X_test, y_test))
 
 score, acc = model.evaluate(X_test, y_test)
 print('Test score:', score)
@@ -78,3 +77,5 @@ with open("model_rnn_128.json", "w") as json_file:
 # serialize weights to HDF5
 model.save_weights("w_rnn_128.h5")
 print("Saved model to disk")
+
+sys.exit(0)
