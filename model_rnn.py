@@ -63,8 +63,8 @@ def create_model(input_length):
 model = create_model(sequence_length)
 
 # sys.exit(0)
-checkpoint = ModelCheckpoint('./weights/weights_lstm.{epoch:03d}-{val_acc:.4f}.hdf5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
-model.fit(X_train, y_train, batch_size=80, epochs=40, callbacks=[checkpoint], validation_data=(X_test, y_test))
+checkpoint = ModelCheckpoint('./weights/w_rnn_128.{epoch:03d}-{val_acc:.4f}.h5', monitor='val_acc', verbose=1, save_best_only=True, mode='auto')
+model.fit(X_train, y_train, batch_size=64, epochs=60, callbacks=[checkpoint], validation_data=(X_test, y_test))
 
 score, acc = model.evaluate(X_test, y_test)
 print('Test score:', score)
@@ -72,9 +72,9 @@ print('Test accuracy:', acc)
 
 # serialize model to JSON
 model_json = model.to_json()
-with open("model_rnn.json", "w") as json_file:
+with open("model_rnn_128.json", "w") as json_file:
     json_file.write(model_json)
 
 # serialize weights to HDF5
-model.save_weights("weights_rnn_final.h5")
+model.save_weights("w_rnn_128.h5")
 print("Saved model to disk")
