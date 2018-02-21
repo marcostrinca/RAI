@@ -1,3 +1,5 @@
 
 *.hdf5
 *.docx
+*.pyc
+__pycache__/data_helpers.cpython-35.pyc
